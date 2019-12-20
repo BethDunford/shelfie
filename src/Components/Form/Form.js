@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 
 class Form extends Component {
     constructor(){
@@ -7,7 +7,12 @@ class Form extends Component {
         this.state = {
             name: "",
             price: "",
-            imgUrl: ""
+            imgUrl: "",
+            baseState: {
+                name: "",
+                price: "",
+                imgUrl: ""
+            }
         };
         this.updateName = this.updateName.bind(this);
         this.updatePrice = this.updatePrice.bind(this);
@@ -27,13 +32,20 @@ updateImageURL(e){
     this.setState({imgUrl: e.target.value});
 }
 
-handleClick(e){
+handleClick(){
     const { name, price, imgUrl } = this.state;
     let body = {
         name,
         price,
         imgUrl
     };
+        axios.post("/api/product", body).then(response => {
+            this.props.updateInventory(response.data)
+        });
+}
+
+handleCancel = () => {
+    this.setState(this.baseState)
 }
 
     render() {
@@ -42,7 +54,7 @@ handleClick(e){
                 <input onChange={this.updateName} placeholder="Name" />
                 <input onChange={this.updatePrice} placeholder="Price" />
                 <input onChange={this.updateImageURL} placeholder="ImageURL" />
-                <button onClick={}>Cancel</button>
+                <button onClick={this.handleCancel}>Cancel</button>
                 <button onClick={this.handleClick}>Add to Inventory</button>
             </div>
         )
